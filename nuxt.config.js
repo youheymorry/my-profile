@@ -3,12 +3,19 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+  // Target: https://go.nuxtjs.dev/config-target
+  target: 'static',
+  // For Github pages
   router: {
     base: '/my-profile/'
   },
-  // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
-
+  pageTransition: {
+    name: 'page',
+    mode: 'out-in',
+    beforeEnter (el) {
+      //console.log('Before enter...');
+    }
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - my-profile',
@@ -28,12 +35,10 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
+  css: ['~/assets/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-  ],
+  plugins: ['~/plugins/plugins.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

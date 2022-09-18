@@ -13,6 +13,7 @@
           :key="i"
           :to="item.to"
           router
+          replace
           exact
         >
           <v-list-item-action>
