@@ -10,11 +10,14 @@
     "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup"
   },
   "dependencies": {
+    "@lottiefiles/vue-lottie-player": "^1.0.9",
     "@nuxtjs/axios": "^5.13.6",
     "apexcharts": "^3.35.5",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",
+    "lottie-web": "^5.9.6",
+    "lottie-web-vue": "^1.2.1",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-apexcharts": "^1.6.2",

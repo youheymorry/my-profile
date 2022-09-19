@@ -2,8 +2,6 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
       fixed
       app
     >
@@ -26,94 +24,89 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
+      :fixed="launched"
+      :app="launched"
+      color="blue darken-3"
+      v-show="launched"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-icon class="mx-2">{{currentPage.icon}}</v-icon>
+      <v-toolbar-title v-text="currentPage.title" />
       <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>mdi-menu</v-icon>
+      <v-btn icon>
+        <v-avatar>
+          <img
+            src="https://cdn.vuetifyjs.com/images/john.jpg"
+            alt="YM"
+          >
+        </v-avatar>
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-container>
-        <Nuxt />
+      <v-container fluid>
+        <v-row v-if="!launched">
+          <v-col cols="12">
+            <LottiePlayer 
+              :animation-data="animationData"
+              :speed="2"
+              :loop="false"
+              @on-complete="onCompleteAnim"/>
+          </v-col>
+        </v-row>
+        <Nuxt v-else/>
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
     <v-footer
       :absolute="!fixed"
       app
     >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>Powered by Nuxt JS</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+import LottiePlayer from "../components/LottiePlayer.vue";
+import animationData from "@/assets/animation/yellow-welcome.json"
+
 export default {
-  name: 'DefaultLayout',
-  data () {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+    name: "DefaultLayout",
+    data() {
+        return {
+            launched: false,
+            title: "My Portfolio",
+            animationData:animationData,
+            drawer: false,
+            clipped: true,
+            fixed: false,
+            items: [
+                {
+                    icon: "mdi-account-box",
+                    title: "About Me",
+                    to: "/"
+                },
+                {
+                    icon: "mdi-chart-bubble",
+                    title: "Currency Charts",
+                    to: "/jcurrency"
+                }
+            ],
+        };
+    },
+    computed: {
+        currentPage() {
+            let currentPath = this.$route.path;
+            let myItem = this.items.filter(obj => obj.to === currentPath)[0];
+            return myItem ? myItem : this.items[0];
         }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
-    }
-  }
+    },
+    methods:{
+      onCompleteAnim(){
+        this.launched = true;
+      }
+    },  
+    mounted() {
+    },
+    components: { LottiePlayer }
 }
 </script>

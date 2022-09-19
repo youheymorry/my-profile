@@ -79,11 +79,5 @@
 <script>
 export default {
   name: 'IndexPage',
-  mounted(){
-    this.$bvToast.toast("Welcome Bootstrapvue", {
-      title: 'BootstrapVue Toast',
-      autoHideDelay: 2000,
-    });
-  }
 }
 </script>
