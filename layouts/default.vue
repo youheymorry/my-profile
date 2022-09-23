@@ -1,8 +1,7 @@
 <template>
   <v-app dark>
     <v-navigation-drawer
-      v-model="drawer"
-      fixed
+      v-model="drawer" 
       app
     >
       <v-list>
@@ -24,7 +23,6 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
-      :fixed="launched"
       :app="launched"
       color="blue darken-3"
       v-show="launched"
@@ -36,7 +34,7 @@
       <v-btn icon>
         <v-avatar>
           <img
-            src="https://cdn.vuetifyjs.com/images/john.jpg"
+            src="@/static/propic.png"
             alt="YM"
           >
         </v-avatar>
@@ -56,9 +54,8 @@
         <Nuxt v-else/>
       </v-container>
     </v-main>
-    <v-footer
-      :absolute="!fixed"
-      app
+    <v-footer v-show="launched"
+      
     >
       <span>Powered by Nuxt JS</span>
     </v-footer>
@@ -89,6 +86,11 @@ export default {
                     icon: "mdi-chart-bubble",
                     title: "Currency Charts",
                     to: "/jcurrency"
+                },
+                {
+                    icon: "mdi-folder",
+                    title: "Machine Learning",
+                    to: "/kaipractice"
                 }
             ],
         };
@@ -110,3 +112,9 @@ export default {
     components: { LottiePlayer }
 }
 </script>
+
+<style scoped>
+  .bg-img {
+    background-image: url("@/static/propic.png");
+  }
+</style>

@@ -1,83 +1,138 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
+  <v-container fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="5" sm="3">
+        <LottiePlayer
+          :animation-data="animationData"
+          :speed="1"
+          :loop="false"/>
+      </v-col>
+      <v-col cols="7" sm="6">
+        <div class="subtitle my-3">
+          Hello I am
+        </div>
+        <h2 class="subheading">
+          <v-avatar>
+            <img
+              src="@/static/japan.png"
+              alt="JP"
             >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
+          </v-avatar>
+          Yuhei Morimoto
+        </h2>
+        <v-card class="text-success font-weight-bold mb-3">
+          Frontend & App Developer / Mechanical Application & Sales Engineer
+        </v-card>
+        <h2>
+          <v-tooltip bottom v-for="(item, i) in scrLangs" :key="i">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon large :color="item.color" v-bind="attrs" v-on="on">
+                {{item.icon}}
+              </v-icon>
+            </template>
+            <span>{{item.name}}</span>
+          </v-tooltip>
+        </h2>
+      </v-col>
+    </v-row>
+    <v-row v-for="(item, i) in scrLangs" :key="i" justify="center" align="center">
+      <v-col cols="12" sm="8">
+        <span class="text-subtitle"><v-icon large class="mr-1" :color="item.color">{{item.icon}}</v-icon>{{item.name}}</span>
+        <v-progress-linear
+          color="blue"
+          height="15"
+          :value="item.score"
+          striped
+        ></v-progress-linear>
+      </v-col>
+    </v-row>
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="8">
+        <v-timeline :dense="$store.state.isMobile">
+          <v-timeline-item
+            v-for="(item, i) in timeLines"
+            :key="i"
+            :color="item.color"
+            small
           >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+            <template v-slot:opposite>
+              <span
+                :class="`headline font-weight-bold ${item.color}--text`"
+                v-text="item.year"
+              ></span>
+            </template>
+            <div class="py-4">
+              <h2 :class="`headline font-weight-light mb-4 ${item.color}--text`">
+                <span v-show="$store.state.isMobile" v-text="item.year" class="mr-2"></span>
+                <span>{{item.title}}</span>
+              </h2>
+              <div v-html="item.description" />
+            </div>
+          </v-timeline-item>
+        </v-timeline>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
+import animationData from "@/assets/animation/38825-robot-hello.json"
+import LottiePlayer from "~/components/LottiePlayer.vue";
+
 export default {
-  name: 'IndexPage',
+    name: "IndexPage",
+    data() {
+        return {
+            animationData: animationData,
+            scrLangs:[
+              {icon:"mdi-vuejs", name:"Vue", color:"green", score:0},
+              {icon:"mdi-language-javascript", name:"Javascript", color:"yellow", score:0},
+              {icon:"mdi-language-java", name:"Java", color:"red", score:0},
+              {icon:"mdi-database-search", name:"SQL", color:"white", score:0},
+              {icon:"mdi-language-python", name:"Python", color:"purple", score:0},
+              {icon:"mdi-language-html5", name:"HTML5", color:"grey", score:0},
+              {icon:"mdi-language-css3", name:"CSS3", color:"grey", score:0},
+              {icon:"mdi-google-spreadsheet", name:"GAS", color:"grey", score:0},
+              {icon:"mdi-microsoft-excel", name:"VBA", color:"grey", score:0},
+            ],
+            maxScores:[90, 80, 60, 50, 40, 70, 60, 100, 100],
+            timeLines: [
+              {color: 'cyan', year: 'Mar. 2015', title:"University Graduation",
+                description:`
+                  Graduated from Ryukoku University in Japan, Master's Degree of Mechanical Engineering.
+                  <a class="mx-1" target="_blank" href="https://www.ryukoku.ac.jp/english2/">Link</a>
+                `
+              },
+              {color: 'green', year: 'Apr. 2015', title:"Start a Career",
+                description:`
+                  Started working as a Sales Engineer at Torishima Pump MFG. Co., Ltd.
+                  <a class="mx-1" target="_blank" href="https://www.torishima.co.jp/en/">Link</a>
+                `
+              },
+              {color: 'pink', year: 'Apr. 2018', title:"Work Style Reform Project",
+                description:`
+                  Joined the Work-Style-Reform-Project team and stated developing/improving applications and systems for the internal work process. (Concurrent)
+                `
+              },
+              {color: 'amber', year: 'Apr. 2022', title:"Application Engineer",
+                description:`
+                  Transferred to a different department and started working as an Application Engineer.
+                `
+              },
+            ],
+        };
+    },
+    methods:{
+      setUpScores(){
+        for(let i=0; i<this.scrLangs.length; i++){
+          this.scrLangs[i].score = this.maxScores[i];
+        }
+      }
+    },
+    mounted(){
+      let self = this;
+      setTimeout(() => {self.setUpScores()}, 1500);
+    },
+    components: { LottiePlayer }
 }
 </script>

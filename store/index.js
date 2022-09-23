@@ -1,6 +1,8 @@
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 export const state = () => ({
   myTxt:"Default",
-  loading:false
+  isMobile:isMobile,
+  loading:false,
 });
 
 // synchronous methods -- commit
