@@ -4,8 +4,8 @@
       <v-col cols="5" sm="3">
         <LottiePlayer
           :animation-data="animationData"
-          :speed="1"
-          :loop="false"/>
+          :speed="1.5"
+          :loop="true"/>
       </v-col>
       <v-col cols="7" sm="6">
         <div class="subtitle my-3">
