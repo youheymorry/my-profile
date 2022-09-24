@@ -18,8 +18,8 @@ export default {
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - my-profile',
-    title: 'my-profile',
+    titleTemplate: '',
+    title: 'Yuhei Portfolio',
     htmlAttrs: {
       lang: 'en'
     },
@@ -30,7 +30,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: 'https://raw.githubusercontent.com/youheymorry/my-profile/main/static/favicon.ico' }
     ]
   },
 

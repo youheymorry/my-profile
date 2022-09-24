@@ -112,9 +112,3 @@ export default {
     components: { LottiePlayer }
 }
 </script>
-
-<style scoped>
-  .bg-img {
-    background-image: url("@/static/propic.png");
-  }
-</style>

@@ -92,8 +92,8 @@ export default {
               {icon:"mdi-language-python", name:"Python", color:"purple", score:0},
               {icon:"mdi-language-html5", name:"HTML5", color:"grey", score:0},
               {icon:"mdi-language-css3", name:"CSS3", color:"grey", score:0},
-              {icon:"mdi-google-spreadsheet", name:"GAS", color:"grey", score:0},
-              {icon:"mdi-microsoft-excel", name:"VBA", color:"grey", score:0},
+              {icon:"mdi-google-spreadsheet", name:"Google App Script", color:"grey", score:0},
+              {icon:"mdi-microsoft-excel", name:"Visual Basic for Applications", color:"grey", score:0},
             ],
             maxScores:[90, 80, 60, 50, 40, 70, 60, 100, 100],
             timeLines: [
@@ -131,7 +131,7 @@ export default {
     },
     mounted(){
       let self = this;
-      setTimeout(() => {self.setUpScores()}, 1500);
+      setTimeout(() => {self.setUpScores()}, 1);
     },
     components: { LottiePlayer }
 }

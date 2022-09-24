@@ -1,6 +1,9 @@
 <template>
   <v-container fluid>
     <v-row justify="center" align="center">
+      <h2><span class="text-info">Forex</span></h2>
+    </v-row>
+    <v-row justify="center" align="center">  
       <v-col cols="6" sm="4">
         <v-select
           :items="currencies"
@@ -9,6 +12,7 @@
           v-model="baseCurrency"
           label="Base Currency"
           :prepend-icon="baseCurrency.icon"
+          hide-details
         ></v-select>
       </v-col>
       <v-col cols="6" sm="4">
@@ -20,12 +24,35 @@
           label="Target Currency"
           :prepend-icon="targetCurrency.icon"
           color="cyan"
+          hide-details
         ></v-select>
       </v-col>
     </v-row>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8">
-        <apexchart type="line" :options="chartData.options" :series="chartData.series"></apexchart>
+        <apexchart type="line" :height="chartHeight" :options="forexChart.options" :series="forexChart.series"></apexchart>
+      </v-col>
+    </v-row>
+
+    <v-divider />
+
+    <v-row justify="center" align="center">
+      <h2><span class="text-success">BTC</span>-<span class="text-danger">ETH</span>/USD</h2>
+    </v-row>
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="8">
+        <apexchart type="line" :height="chartHeight" :options="cryptoChart.options" :series="cryptoChart.series"></apexchart>
+      </v-col>
+    </v-row>
+
+    <v-divider />
+
+    <v-row justify="center" align="center">
+      <h2><span class="text-success">BTC</span>/<span class="text-danger">ETH</span></h2>
+    </v-row>
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="8">
+        <apexchart type="candlestick" :height="chartHeight" :options="candleData.options" :series="candleData.series"></apexchart>
       </v-col>
     </v-row>
     <SimpleLoader :dialog="loading" />
@@ -46,17 +73,20 @@ export default {
               {symbol:"JPY", icon:"mdi-currency-jpy"},
               {symbol:"CNY", icon:"mdi-currency-cny"}
             ],
-            stackData:[],
             currencyData: [],
             baseCurrency: {symbol:"USD", icon:"mdi-currency-usd"},
             targetCurrency: {symbol:"JPY", icon:"mdi-currency-jpy"},
             num_of_days: 30,
-            loading:false,
+            cryptoData:{btc:[], eth:[], btceth:[]},
+            loadingForex:false,
+            loadingBtc:false,
+            loadingEth:false,
+            loadingBtcEth:false,
         };
     },
     methods: {
-        getCurrencyData: async function () {
-            this.loading = true;
+        getForexData: async function () {
+            this.loadingForex = true;
             const self = this;
             let startDate = new Date(), endDate = new Date();
             startDate.setDate(startDate.getDate() - this.num_of_days);
@@ -72,7 +102,7 @@ export default {
                     targetDate.setDate(targetDate.getDate() + plusDay);
                     var d = formatDate(targetDate, "yyyy-MM-dd");
                     var curData = rates[d];
-                    if (curData) convData.push({ date: convertToSimpleDate(targetDate), data: curData });
+                    if (curData) convData.push({ date: convertToSimpleDate(targetDate), data: curData, time:targetDate.getTime() });
                 }
                 //console.log(convData);
                 self.currencyData = convData;
@@ -81,38 +111,162 @@ export default {
                 console.log(error);
             })
               .finally(function() {
-                self.loading = false;
+                self.loadingForex = false;
+            });
+        },
+        getBtcData: async function () {
+            this.loadingBtc = true;
+            const self = this;
+            let url = "https://api.coincap.io/v2/assets/bitcoin/history?interval=d1"
+            const res = await this.$axios.get(url)
+              .then(function (response) {
+                //console.log(response.data);
+                self.cryptoData.btc = response.data.data;
+            })
+              .catch(function (error) {
+                console.log(error);
+            })
+              .finally(function() {
+                self.loadingBtc = false;
+            });
+        },
+        getEthData: async function () {
+            this.loadingEth = true;
+            const self = this;
+            let url = "https://api.coincap.io/v2/assets/ethereum/history?interval=d1"
+            const res = await this.$axios.get(url)
+              .then(function (response) {
+                //console.log(response.data);
+                self.cryptoData.eth = response.data.data;
+            })
+              .catch(function (error) {
+                console.log(error);
+            })
+              .finally(function() {
+                self.loadingEth = false;
+            });
+        },
+        getBtcEthData: async function () {
+            this.loadingBtcEth = true;
+            const self = this;
+            let url = "https://api.coincap.io/v2/candles?exchange=poloniex&interval=w1&baseId=ethereum&quoteId=bitcoin"
+            const res = await this.$axios.get(url)
+              .then(function (response) {
+                //console.log(response.data);
+                self.cryptoData.btceth = response.data.data;
+            })
+              .catch(function (error) {
+                console.log(error);
+            })
+              .finally(function() {
+                self.loadingBtcEth = false;
             });
         },
     },
     computed: {
-        chartData() {
+        forexChart() {
             let bSymbol = this.baseCurrency.symbol;
             let tSymbol = this.targetCurrency ? this.targetCurrency.symbol : null;
             if(!tSymbol || tSymbol === bSymbol) {
               this.targetCurrency = this.currencies.filter(cur => cur.symbol !== bSymbol)[0];
               tSymbol = this.targetCurrency.symbol;
             }
-            let xdata = [], ydata = [];
+            let gdata = [];
             this.currencyData.forEach(obj => {
-                xdata.push(obj.date);
                 var myData = obj.data[tSymbol];
                 myData = myData ? myData : 0;
-                ydata.push(myData);
+                gdata.push({x:obj.time, y:myData});
             });
-            let series = [{ name: bSymbol + "/" + tSymbol, data: ydata }];
+            let series = [{ name: bSymbol + "/" + tSymbol, data: gdata }];
             let options = {};
             options.theme = { mode: "dark" };
-            options.xaxis = { categories: xdata };
+            options.xaxis = { type: "datetime" };
             return { options: options, series: series };
+        },
+        cryptoChart(){
+          let btcData = [], ethData = [];
+          this.cryptoData.btc.forEach(item => {
+            btcData.push({x:item.time, y:Math.round(item.priceUsd)});
+          });
+          this.cryptoData.eth.forEach(item => {
+            ethData.push({x:item.time, y:Math.round(item.priceUsd)});
+          });
+          let series = [];
+          series.push({name:"BTC/USD", data:btcData});
+          series.push({name:"ETH/USD", data:ethData});
+          let options = {};
+          options.theme = { mode: "dark" };
+          options.xaxis = { type: "datetime" };
+          options.colors = ["#28a745", "#dc3545"];
+          let formatter = function(val) {
+            return Number(val).toLocaleString();
+          }
+          options.yaxis = [];
+          let btcAxis = {
+            axisTicks:{show:true},
+            axisBorder: {
+              show: true,
+              color: options.colors[0]
+            },
+            labels:{
+              style:{color:options.colors[0]},
+              formatter:formatter
+            },
+            title:{
+              text:"BTC/USD",
+              style:{color:options.colors[0]}
+            }
+          }
+          let ethAxis = {
+            opposite:true,
+            axisTicks:{show:true},
+            axisBorder: {
+              show: true,
+              color: options.colors[1]
+            },
+            labels:{
+              style:{color:options.colors[1]},
+              formatter:formatter
+            },
+            title:{
+              text:"ETH/USD",
+              style:{color:options.colors[1]}
+            }
+          }
+          options.yaxis = [btcAxis, ethAxis];
+          return { options: options, series: series };
+        },
+        candleData(){
+          let gdata = [];
+          let btcethData = this.cryptoData.btceth;
+          btcethData = btcethData.slice(-30);
+          btcethData.forEach(obj => {
+              var xdata = obj.period;
+              var ydata = [obj.open, obj.high, obj.low, obj.close];
+              gdata.push({x:xdata, y:ydata});
+          });
+          let series = [{ name: "BTC/ETH", data: gdata }];
+          let options = {};
+          options.theme = { mode: "dark" };
+          options.xaxis = { type: "datetime" };
+          return { options: options, series: series };
+        },
+        chartHeight(){
+          return this.$store.state.isMobile ? 400 : 500;
+        },
+        loading(){
+          return this.loadingForex || this.loadingBtc || this.loadingEth || this.loadingBtcEth;
         }
     },
     mounted() {
-        this.getCurrencyData();
+        this.getForexData();
+        this.getBtcData();
+        this.getEthData();
+        this.getBtcEthData();
     },
     watch: {
         baseCurrency() {
-            this.getCurrencyData();
+            this.getForexData();
         }
     },
     components: { SimpleLoader }
