@@ -43,7 +43,7 @@ export default {
       lottie.setSpeed(this.speed);
     },
     onComplete() {
-      this.$emit("on-complete")
+      this.$emit("on-complete");
     },
   },
 };

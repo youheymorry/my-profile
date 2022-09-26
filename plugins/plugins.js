@@ -10,11 +10,3 @@ Vue.use(IconsPlugin);
 import VueApexCharts from "vue-apexcharts";
 Vue.use(VueApexCharts);
 Vue.component('apexchart', VueApexCharts);
-
-// // *** Lottie Player
-// import LottieVuePlayer from "@lottiefiles/vue-lottie-player";
-// Vue.use(LottieVuePlayer);
-
-// // *** Lottie Web Vue
-// import LottieAnimation from 'lottie-web-vue'
-// Vue.use(LottieAnimation); // add lottie-animation to your global scope

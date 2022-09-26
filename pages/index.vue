@@ -26,7 +26,7 @@
         <h2>
           <v-tooltip bottom v-for="(item, i) in scrLangs" :key="i">
             <template v-slot:activator="{ on, attrs }">
-              <v-icon large :color="item.color" v-bind="attrs" v-on="on">
+              <v-icon :large="!isMobile" :color="item.color" v-bind="attrs" v-on="on">
                 {{item.icon}}
               </v-icon>
             </template>
@@ -120,6 +120,7 @@ export default {
                 `
               },
             ],
+            isMobile:this.$store.state.isMobile,
         };
     },
     methods:{

@@ -1,4 +1,4 @@
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 export const state = () => ({
   myTxt:"Default",
   isMobile:isMobile,
@@ -7,8 +7,9 @@ export const state = () => ({
 
 // synchronous methods -- commit
 export const mutations = {
-  changeTxt(state, txt) {
-    state.myTxt = txt;
+  changeScreen(state) {
+    // for development only
+    state.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   },
   toggleLoading(state) {
     state.loading = !state.loading;
