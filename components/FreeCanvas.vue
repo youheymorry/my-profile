@@ -88,15 +88,20 @@ export default {
     },
     draw() {
       let sk = this.sketch;
+      window.addEventListener('touchmove', this.stopDefault);
       if((sk.mouseIsPressed || this.writingMode) && !this.penColorMenuOpen){
         sk.line(sk.pmouseX, sk.pmouseY, sk.mouseX, sk.mouseY);
       }else{
         this.writingMode = false;
       }
+      window.removeEventListener('touchmove', this.stopDefault)
     },
     touchStarted(){
       this.writingMode = true;
       this.draw(this.sketch);
+    },
+    stopDefault(event){
+      event.preventDefault();
     },
     testFunc(val){
       alert(val);
