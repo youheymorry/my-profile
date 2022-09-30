@@ -17,3 +17,7 @@
 .apexcharts-toolbar {
   z-index: 0 !important;
 }
+
+.no-touch-action {
+  touch-action: none;
+}

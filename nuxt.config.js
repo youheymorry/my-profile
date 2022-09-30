@@ -29,6 +29,9 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
+    script:[
+      {src:"https://unpkg.com/ml5@latest/dist/ml5.min.js"}
+    ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: 'https://raw.githubusercontent.com/youheymorry/my-profile/main/static/favicon.ico' }
     ]

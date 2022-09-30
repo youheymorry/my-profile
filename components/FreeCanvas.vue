@@ -41,7 +41,7 @@
       </template>
       Clear Canvas
     </v-tooltip>
-    <vue-p5 v-on="{setup, draw, touchStarted}"></vue-p5>
+    <vue-p5 class="no-touch-action" v-on="{setup, draw, touchStarted}"></vue-p5>
   </div>
     
 </template>
@@ -109,4 +109,5 @@ export default {
   },
   components:{ "vue-p5":VueP5 }
 };
+
 </script>
