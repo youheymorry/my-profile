@@ -49,13 +49,13 @@
 <script>
 import VueP5 from "vue-p5";
 export default {
-  name:"VueP5",
+  name:"FreeCanvas",
   data(){
     return {
       sketch:null,
       isCreated:false,
       writingMode:false,
-      canvasProps:{bgColor:"white", stColor:"black", stWeight:4, width:400, height:400},
+      canvasProps:{bgColor:"white", stColor:"black", stWeight:4, size:400},
       colors:["black", "red", "blue", "green", "orange", "cyan"],
       penColorMenuOpen:false
     }
@@ -64,12 +64,12 @@ export default {
     setup(sk) {
       this.sketch = sk;
     },
-    resetMyCanvas(width, height=400){//custom
-      if(!width) width = this.canvasProps.width;
-      this.isCreated ? this.sketch.resizeCanvas(width+1, height) : this.sketch.createCanvas(width, height);
+    resetMyCanvas(size){//custom
+      if(!size) size = this.canvasProps.size;
+      this.isCreated ? this.sketch.resizeCanvas(size, size) : this.sketch.createCanvas(size, size);
       this.sketch.background(this.canvasProps.bgColor);
       this.sketch.stroke(this.canvasProps.stColor), this.sketch.strokeWeight(this.canvasProps.stWeight);
-      this.isCreated = true, this.canvasProps.width = width;
+      this.isCreated = true, this.canvasProps.size = size;
     },
     setCanvasProps(bgColor, stColor, stWeight){
       this.writingMode = false;
@@ -88,20 +88,15 @@ export default {
     },
     draw() {
       let sk = this.sketch;
-      window.addEventListener('touchmove', this.stopDefault);
       if((sk.mouseIsPressed || this.writingMode) && !this.penColorMenuOpen){
         sk.line(sk.pmouseX, sk.pmouseY, sk.mouseX, sk.mouseY);
       }else{
         this.writingMode = false;
       }
-      window.removeEventListener('touchmove', this.stopDefault)
     },
     touchStarted(){
       this.writingMode = true;
       this.draw(this.sketch);
-    },
-    stopDefault(event){
-      event.preventDefault();
     },
     testFunc(val){
       alert(val);

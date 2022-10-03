@@ -15,7 +15,8 @@
             <v-btn @click="classifyImage" color="success">Classify</v-btn>
           </template>
         </v-file-input> -->
-        <v-img :src="testImage" height="500" :width="currentWidth"></v-img>
+        <v-btn @click="classifyImage" color="cyan">TEST</v-btn>
+        <ImageCanvas ref="imageCanvas" />
       </v-col>
     </v-row>
   </v-container>
@@ -24,6 +25,8 @@
 <script>
 import FreeCanvas from '~/components/FreeCanvas.vue';
 import NekoImage from "~/assets/nekopic.jpg"
+import ImageCanvas from '~/components/ImageCanvas.vue';
+import * as MacLea from "~/assets/JSFiles/MacLea.js"
 
 export default {
   name: "MachineLearnings",
@@ -32,23 +35,23 @@ export default {
       imgClassifier:null,
       currentWidth:0,
       testImage:NekoImage,
+      imgPath:""
     }
   },
   computed:{
     
   },
   methods: {
-    handleResize: function() {
+    resetAllCanvas(initial){
+      initial = initial && initial.isTrusted === undefined;
       this.$store.commit("changeScreen");// for testing only
       let canWidth = this.getCanvasWidth();
-      if(this.currentWidth !== canWidth){
+      if(this.currentWidth !== canWidth || initial){
         this.currentWidth = canWidth;
-        this.createFreeCanvas(canWidth);
+        this.$refs.freeCanvas.resetMyCanvas(canWidth);
+        let myImg = this.imgPath === '' ? this.testImage : this.imgPath;
+        this.$refs.imageCanvas.resetMyCanvas(canWidth, myImg);
       }
-    },
-    createFreeCanvas(canWidth){
-      let fc = this.$refs.freeCanvas;
-      fc.resetMyCanvas(canWidth);
     },
     getCanvasWidth(){
       let windowWidth = window.innerWidth-60;
@@ -59,18 +62,33 @@ export default {
 
     },
     classifyImage(){
-
+      let imageP5 = this.$refs.imageCanvas.getMyImageP5();
+      MacLea.classifyMyImage(imageP5, this.showImageClassifyResult);
+      //this.imgClassifier.classify(imageP5, this.showImageClassifyResult);
+    },
+    showImageClassifyResult(error, result){
+      if(error){
+        console.log(error);
+        alert("Error");
+      }else if(result){
+        console.log(result);
+        var str = result[0].label;
+        var perc = Math.round(result[0].confidence*100) + "%";
+        alert(str + " (" + perc + ")");
+      }else{
+        alert("Unexpected Error");
+      }
     }
   },
   mounted: function () {
-    window.addEventListener('resize', this.handleResize);
-    this.createFreeCanvas();
+    window.addEventListener('resize', this.resetAllCanvas);
+    this.resetAllCanvas(true);
     if(!this.imgClassifier) this.imgClassifier = ml5.imageClassifier('MobileNet');
   },
   beforeDestroy: function () {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.resetAllCanvas)
   },
-  components: { FreeCanvas }
+  components: { FreeCanvas, ImageCanvas }
 };
 
 </script>
