@@ -52,6 +52,7 @@
           </v-col>
         </v-row>
         <Nuxt v-else/>
+        <SimpleLoader :dialog="$store.state.loading" />
       </v-container>
     </v-main>
     <v-footer v-show="launched"
@@ -65,6 +66,7 @@
 <script>
 import LottiePlayer from "../components/LottiePlayer.vue";
 import animationData from "@/assets/animation/yellow-welcome.json"
+import SimpleLoader from "~/components/SimpleLoader.vue";
 
 export default {
     name: "DefaultLayout",
@@ -109,6 +111,6 @@ export default {
     },  
     mounted() {
     },
-    components: { LottiePlayer }
+    components: { LottiePlayer, SimpleLoader }
 }
 </script>

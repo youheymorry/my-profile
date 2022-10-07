@@ -55,12 +55,11 @@
         <apexchart type="candlestick" :height="chartHeight" :options="candleData.options" :series="candleData.series"></apexchart>
       </v-col>
     </v-row>
-    <SimpleLoader :dialog="loading" />
   </v-container>
 </template>
 
 <script>
-import SimpleLoader from '~/components/SimpleLoader.vue';
+// import SimpleLoader from '~/components/SimpleLoader.vue';
 export default {
     name: "CurrencyPage",
     data() {
@@ -267,9 +266,11 @@ export default {
     watch: {
         baseCurrency() {
             this.getForexData();
+        },
+        loading(){
+            this.$store.commit("toggleLoading", this.loading);
         }
     },
-    components: { SimpleLoader }
 }
 
 function formatDate(date, format) {

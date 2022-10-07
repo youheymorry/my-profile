@@ -3,13 +3,11 @@
 </template>
 
 <script>
-import lottie from 'lottie-web';
-
 export default {
   props:{
     animationData:{
       type: Object,
-      required: true
+      required: false
     },
     loop: {
       type: Boolean,
@@ -25,26 +23,46 @@ export default {
   data() {
     return {
       animation: null,
+      lottie:null
     };
   },
   mounted() {
     this.loadAnimation();
-    this.animation.onComplete = this.onComplete;
   },
   methods: {
-    loadAnimation() {
-      this.animation = lottie.loadAnimation({
-        container: this.$refs.lottie,
-        renderer: 'svg',
-        loop: this.loop,
-        autoplay: true,
-        animationData:this.animationData,
+    async loadAnimation() {
+      this.lottie = await import('lottie-web').then(module => module.default);
+      //this.animationData = await import('~/path/to/animationData.json');
+      const self = this;
+      this.$nextTick(() => {
+        self.animation = self.lottie.loadAnimation({
+          animationData:self.animationData,
+          loop:self.loop,
+          autoplay:true,
+          renderer:'svg',
+          container:self.$refs.lottie,
+          rendererSettings : {
+            progressiveLoad: false,
+          },
+        });
+        self.lottie.setSpeed(self.speed);
+        self.animation.onComplete = self.onComplete;
       });
-      lottie.setSpeed(this.speed);
     },
     onComplete() {
       this.$emit("on-complete");
     },
+  },
+  beforeDestroy () {
+    if (this.lottie) {
+      this.lottie.destroy();
+      this.lottie = null;
+    }
+    if (this.animation) {
+      this.animation.stop();
+      this.animation.destroy();
+      this.animation = null;
+    }
   },
 };
 </script>

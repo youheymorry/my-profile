@@ -6,7 +6,7 @@
       width="300"
     >
       <v-card
-        color="primary"
+        color="purple"
         dark
       >
         <v-card-text>
@@ -24,6 +24,7 @@
 
 <script>
   export default {
+    name:"SimpleLoader",
     props:{
       dialog:{
         type:Boolean,

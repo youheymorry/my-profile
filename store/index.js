@@ -3,6 +3,11 @@ export const state = () => ({
   myTxt:"Default",
   isMobile:isMobile,
   loading:false,
+  imgClassifier:null,
+  animData:{
+    loadAnim1:null,
+    loadAnim2:null
+  }
 });
 
 // synchronous methods -- commit
@@ -11,8 +16,15 @@ export const mutations = {
     // for development only
     state.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   },
-  toggleLoading(state) {
-    state.loading = !state.loading;
+  toggleLoading(state, bool) {
+    state.loading = bool;
+  },
+  loadAnimData(state, animData){
+    state.loadAnim1 = animData.loadAnim1;
+    state.loadAnim2 = animData.loadAnim2;
+  },
+  saveImgClassifier(state, imgClassifier){
+    state.imgClassifier = imgClassifier;
   }
 };
 
