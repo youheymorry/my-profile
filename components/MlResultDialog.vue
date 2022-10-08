@@ -30,12 +30,16 @@
         chartData:{}
       }
     },
+    computed:{
+      maxWidth(){
+        return this.$store.state.isMobile ? 2000 : 1000;
+      }
+    },  
     methods:{
       showDialog(chartData){
         this.chartData = {options:{}, series:[], height:chartData.height}, this.dialog = true;
         const self = this;
         setTimeout(() => self.chartData = chartData, 300);
-        //this.chartData = chartData, this.dialog = true;
       }
     }
   }

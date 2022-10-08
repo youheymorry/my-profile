@@ -1,13 +1,8 @@
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 export const state = () => ({
-  myTxt:"Default",
   isMobile:isMobile,
   loading:false,
   imgClassifier:null,
-  animData:{
-    loadAnim1:null,
-    loadAnim2:null
-  }
 });
 
 // synchronous methods -- commit

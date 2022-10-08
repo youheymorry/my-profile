@@ -33,7 +33,7 @@ export default {
     },
     getMyImageP5(){
       return this.myImgP5;
-    }
+    },
   },
   components:{ "vue-p5":VueP5 }
 };

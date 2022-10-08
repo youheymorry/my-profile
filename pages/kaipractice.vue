@@ -5,16 +5,43 @@
         <FreeCanvas ref="freeCanvas" />
       </v-col>
     </v-row>
+    <v-divider />
+    <v-row justify="center" align="center">
+      <span class="text-h6">Image Classification</span>
+    </v-row>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8">
-        <v-btn color="primary" @click="fileBtnClick" class="mr-3">
-          <v-icon class="mr-1">mdi-camera-image</v-icon>
-          select image
-        </v-btn>
-        <v-btn @click="classifyImage" color="cyan">
-          <v-icon class="mr-1">mdi-robot</v-icon>
-          Classify
-        </v-btn>
+        <v-tooltip top color="primary">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" @click="fileBtnClick" v-bind="attrs" v-on="on" class="mr-1 px-0">
+              <v-icon large>mdi-camera-image</v-icon>
+            </v-btn>
+          </template>
+          <span>Select Image</span>
+        </v-tooltip>
+        <v-menu open-on-hover bottom offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" v-bind="attrs" v-on="on" class="mr-3 px-0">
+              <v-icon large>mdi-image-search</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item v-for="(item, index) in imgItems" :key="index" @click="selectImgFromAsset(index)">    
+              <v-list-item-title>
+                <v-icon class="mr-1">{{item.icon}}</v-icon>{{ item.title }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-tooltip top color="info">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="info" @click="classifyImage" v-bind="attrs" v-on="on" class="mr-3 px-0">
+              <v-icon large>mdi-robot</v-icon>
+            </v-btn>
+          </template>
+          <span>Classify Image</span>
+        </v-tooltip>
       </v-col>
     </v-row>
     <v-row justify="center" align="center" class="mt-0">
@@ -35,10 +62,13 @@
 
 <script>
 import FreeCanvas from '~/components/FreeCanvas.vue';
-import NekoImage from "~/assets/nekopic.jpg"
 import ImageCanvas from '~/components/ImageCanvas.vue';
 import MlResultDialog from '~/components/MlResultDialog.vue';
-// import AnimeLoader from '~/components/AnimeLoader.vue';
+import BirdImage from "~/assets/sample_images/bird.jpg";
+import DogImage1 from "~/assets/sample_images/jack.png";
+import DogImage2 from "~/assets/sample_images/MrBubz.jpg";
+import CatImage1 from "~/assets/sample_images/kitten.jpg";
+import CatImage2 from "~/assets/sample_images/neko.png";
 
 export default {
   name: "MachineLearnings",
@@ -46,9 +76,15 @@ export default {
     return {
       loading:false,
       currentWidth:0,
-      nokeImage:NekoImage,
-      uploadedImgUrl:null,
+      selectedImg:BirdImage,
       mlResultDialog:false,
+      imgItems:[
+        {title:"Bird", icon:"mdi-bird", img:BirdImage},
+        {title:"Dog1", icon:"mdi-dog", img:DogImage1},
+        {title:"Dog2", icon:"mdi-dog", img:DogImage2},
+        {title:"Cat1", icon:"mdi-cat", img:CatImage1},
+        {title:"Cat2", icon:"mdi-cat", img:CatImage2}
+      ]
     }
   },
   computed:{
@@ -58,9 +94,6 @@ export default {
     imgClassifier(){
       return this.$store.state.imgClassifier;
     },
-    imgToClassify(){
-      return this.uploadedImgUrl ? this.uploadedImgUrl : this.nokeImage;
-    }
   },
   methods: {
     resetAllCanvas(initial){
@@ -70,7 +103,7 @@ export default {
       if(this.currentWidth !== canWidth || initial){
         this.currentWidth = canWidth;
         this.$refs.freeCanvas.resetMyCanvas(canWidth);
-        this.$refs.imageCanvas.resetMyCanvas(canWidth, this.imgToClassify);
+        this.$refs.imageCanvas.resetMyCanvas(canWidth, this.selectedImg);
       }
     },
     getCanvasWidth(){
@@ -94,8 +127,12 @@ export default {
     },
     async changeImage(){
       const file = this.$refs.input.files[0];
-      this.uploadedImgUrl = URL.createObjectURL(file);
-      this.$refs.imageCanvas.resetMyCanvas(this.getCanvasWidth(), this.imgToClassify);
+      this.selectedImg = URL.createObjectURL(file);
+      this.$refs.imageCanvas.resetMyCanvas(this.getCanvasWidth(), this.selectedImg);
+    },
+    selectImgFromAsset(index){
+      this.selectedImg = this.imgItems[index].img;
+      this.$refs.imageCanvas.resetMyCanvas(this.getCanvasWidth(), this.selectedImg);
     },
     classifyImage(){
       this.$store.commit("toggleLoading", true);
@@ -109,26 +146,16 @@ export default {
       }else if(result){
         var options = {xaxis:{categories:[]}, yaxis:{}, dataLabels:{}, theme:{mode:"dark"}};
         var series = [{name:"Img Classifier Result", data:[]}];
+        var isMobile = this.$store.state.isMobile;
         result.forEach(res => {
-          options.xaxis.categories.push(res.label);
+          var label = isMobile ? res.label.split(",")[0] : res.label;
+          options.xaxis.categories.push(label);
           var perc = Math.round(res.confidence*100);
           series[0].data.push(perc);
         });
         let height = this.$store.state.isMobile ? 400 : 500;
         let formatter = function (val) {
           return val + "%";
-        };
-        options.xaxis.crosshairs = {
-          fill: {
-            type: 'gradient',
-            gradient: {
-              colorFrom: '#D8E3F0',
-              colorTo: '#BED1E6',
-              stops: [0, 100],
-              opacityFrom: 0.4,
-              opacityTo: 0.5,
-            }
-          }
         };
         options.yaxis.labels = {formatter:formatter};
         options.dataLabels = {formatter:formatter};
