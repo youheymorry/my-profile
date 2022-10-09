@@ -266,6 +266,8 @@ export default {
         }
     },
     mounted() {
+        const prDialog = this.$refs.progressCircularDialog;
+        prDialog.showDialog("Loading Currency Data...");
         this.getForexData();
         this.getBtcData();
         this.getEthData();
