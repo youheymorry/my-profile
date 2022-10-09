@@ -3,6 +3,7 @@ export const state = () => ({
   isMobile:isMobile,
   loading:false,
   imgClassifier:null,
+  mnistModel:null
 });
 
 // synchronous methods -- commit
@@ -14,12 +15,11 @@ export const mutations = {
   toggleLoading(state, bool) {
     state.loading = bool;
   },
-  loadAnimData(state, animData){
-    state.loadAnim1 = animData.loadAnim1;
-    state.loadAnim2 = animData.loadAnim2;
-  },
   saveImgClassifier(state, imgClassifier){
     state.imgClassifier = imgClassifier;
+  },
+  saveMnistModel(state, model){
+    state.mnistModel = model;
   }
 };
 
@@ -34,8 +34,9 @@ export const actions = {
   }
 };
 
+// store.getters.getMyTxt
 export const getters = {
-  addIdentTxt(stete){
-    return "Getters " + state.myTxt;
+  getMyTxt(state){
+    return state.myTxt;
   }
 };

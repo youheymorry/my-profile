@@ -86,6 +86,8 @@ export default {
             animationData: animationData,
             scrLangs:[
               {icon:"mdi-vuejs", name:"Vue", color:"green", score:0},
+              {icon:"mdi-react", name:"React", color:"blue", score:0},
+              {icon:"mdi-angular", name:"Angular", color:"red", score:0},
               {icon:"mdi-language-javascript", name:"Javascript", color:"yellow", score:0},
               {icon:"mdi-language-java", name:"Java", color:"red", score:0},
               {icon:"mdi-database-search", name:"SQL", color:"white", score:0},
@@ -95,7 +97,7 @@ export default {
               {icon:"mdi-google-spreadsheet", name:"Google App Script", color:"grey", score:0},
               {icon:"mdi-microsoft-excel", name:"Visual Basic for Applications", color:"grey", score:0},
             ],
-            maxScores:[90, 80, 60, 50, 40, 70, 60, 100, 100],
+            maxScores:[90, 10, 10, 80, 60, 50, 40, 70, 60, 100, 100],
             timeLines: [
               {color: 'cyan', year: 'Mar. 2015', title:"University Graduation",
                 description:`
@@ -128,7 +130,7 @@ export default {
         for(let i=0; i<this.scrLangs.length; i++){
           this.scrLangs[i].score = this.maxScores[i];
         }
-      }
+      },
     },
     mounted(){
       let self = this;

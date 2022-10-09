@@ -57,6 +57,7 @@
       @change="changeImage()"
     >
     <MlResultDialog ref="mlResultDialog" />
+    <ProgressCircularDialog ref="progressCircularDialog" />
   </v-container>
 </template>
 
@@ -69,9 +70,10 @@ import DogImage1 from "~/assets/sample_images/jack.png";
 import DogImage2 from "~/assets/sample_images/MrBubz.jpg";
 import CatImage1 from "~/assets/sample_images/kitten.jpg";
 import CatImage2 from "~/assets/sample_images/neko.png";
+import ProgressCircularDialog from '~/components/ProgressCircularDialog.vue';
 
 export default {
-  name: "MachineLearnings",
+  name: "KAIPractice",
   data(){
     return {
       loading:false,
@@ -114,11 +116,13 @@ export default {
     loadMlModels(){
       const self = this;
       if(!self.imgClassifier){
-        self.$store.commit("toggleLoading", true);
+        const prDialog = self.$refs.progressCircularDialog;
+        prDialog.showDialog("Loading Machine Learning Models...");
+        setTimeout(() => prDialog.changeProgress(30), 1);
         ml5.imageClassifier('MobileNet', function(err, model) {
-          // self.imgClassifier = model;
           self.$store.commit("saveImgClassifier", model);
-          self.$store.commit("toggleLoading", false);
+          prDialog.changeProgress(100);
+          setTimeout(() => prDialog.closeDialog(), 500);
         });
       }
     },
@@ -175,7 +179,7 @@ export default {
   beforeDestroy: function () {
     window.removeEventListener('resize', this.resetAllCanvas)
   },
-  components: { FreeCanvas, ImageCanvas, MlResultDialog }
+  components: { FreeCanvas, ImageCanvas, MlResultDialog, ProgressCircularDialog }
 };
 
 </script>
