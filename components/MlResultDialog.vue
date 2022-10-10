@@ -2,7 +2,7 @@
   <v-dialog
     transition="dialog-bottom-transition"
     v-model="dialog"
-    :max-width="$store.state.isMobile ? 2000 : 600"
+    :max-width="$store.state.isMobile ? 2000 : 900"
   >
     <v-card>
       <v-toolbar

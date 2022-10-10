@@ -2,8 +2,10 @@ let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.
 export const state = () => ({
   isMobile:isMobile,
   loading:false,
-  imgClassifier:null,
-  mnistModel:null
+  mlModels:{
+    imgClassifier:null,
+    mnistModel:null
+  }
 });
 
 // synchronous methods -- commit
@@ -16,10 +18,10 @@ export const mutations = {
     state.loading = bool;
   },
   saveImgClassifier(state, imgClassifier){
-    state.imgClassifier = imgClassifier;
+    state.mlModels.imgClassifier = imgClassifier;
   },
   saveMnistModel(state, model){
-    state.mnistModel = model;
+    state.mlModels.mnistModel = model;
   }
 };
 

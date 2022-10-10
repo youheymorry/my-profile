@@ -12,7 +12,6 @@ export default {
       sketch:null,
       isCreated:false,
       currentSize:400,
-      myImgP5:null
     }
   },
   methods: {
@@ -28,11 +27,22 @@ export default {
       this.sketch.loadImage(img, this.showMyImage);
     },
     showMyImage(imageP5){
-      this.myImgP5 = imageP5;
       this.sketch.image(imageP5, 0, 0, this.currentSize, this.currentSize);
     },
-    getMyImageP5(){
-      return this.myImgP5;
+    getImageData(){
+      let imgDataP5 = this.sketch.get();
+      const imgSize = this.currentSize; // for mnist model classification
+      // imgDataP5.resize(imgSize, imgSize);
+      // const originalSize = this.canvasProps.size;
+      // let graphics = this.sketch.createGraphics(28,28);
+      // let originalImgInfo = [0, 0, originalSize, originalSize];
+      // let copiedInfo = [0, 0, imgSize, imgSize];
+      // graphics.copy(this.sketch, ...originalImgInfo, ...copiedInfo);
+      let resizedData = imgDataP5;
+      //resizedData.save("ResizedImgTest");
+      let dwgContext = resizedData.drawingContext;
+      let imageData = dwgContext.getImageData(0,0,imgSize,imgSize);
+      return imageData;
     },
   },
   components:{ "vue-p5":VueP5 }

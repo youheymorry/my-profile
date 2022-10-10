@@ -55,7 +55,7 @@
         <apexchart type="candlestick" :height="chartHeight" :options="candleData.options" :series="candleData.series"></apexchart>
       </v-col>
     </v-row>
-    <ProgressCircularDialog ref="progressCircularDialog" :val="loadingProgress" color="primary" />
+    <ProgressCircularDialog ref="progressCircularDialog" color="primary" />
   </v-container>
 </template>
 
@@ -114,6 +114,7 @@ export default {
             })
                 .finally(function () {
                 self.loadingForex = false;
+                self.changeProgressLoader(self.loadingProgress);
             });
         },
         getBtcData: async function () {
@@ -130,6 +131,7 @@ export default {
             })
                 .finally(function () {
                 self.loadingBtc = false;
+                self.changeProgressLoader(self.loadingProgress);
             });
         },
         getEthData: async function () {
@@ -146,6 +148,7 @@ export default {
             })
                 .finally(function () {
                 self.loadingEth = false;
+                self.changeProgressLoader(self.loadingProgress);
             });
         },
         getBtcEthData: async function () {
@@ -162,8 +165,22 @@ export default {
             })
                 .finally(function () {
                 self.loadingBtcEth = false;
+                self.changeProgressLoader(self.loadingProgress);
             });
         },
+        showProgressLoader(loadingTxt){
+            const prDialog = this.$refs.progressCircularDialog;
+            prDialog.showDialog(loadingTxt);
+        },
+        changeProgressLoader(val){
+            const prDialog = this.$refs.progressCircularDialog;
+            prDialog.changeProgress(val);
+            if(val === 100) this.closeProgressLoader();
+        },
+        closeProgressLoader(){
+            const prDialog = this.$refs.progressCircularDialog;
+            setTimeout(() => prDialog.closeDialog(), 350);
+        }
     },
     computed: {
         forexChart() {
@@ -266,8 +283,7 @@ export default {
         }
     },
     mounted() {
-        const prDialog = this.$refs.progressCircularDialog;
-        prDialog.showDialog("Loading Currency Data...");
+        this.showProgressLoader("Loading Currency Data...");
         this.getForexData();
         this.getBtcData();
         this.getEthData();
@@ -275,16 +291,10 @@ export default {
     },
     watch: {
         baseCurrency() {
-            const prDialog = this.$refs.progressCircularDialog;
-            prDialog.showDialog("Loading Currency Data...");
+            this.changeProgressLoader(0);
+            this.showProgressLoader("Loading Currency Data...");
             this.getForexData();
         },
-        loadingProgress(){
-            if(this.loadingProgress === 100){
-              const prDialog = this.$refs.progressCircularDialog;
-              setTimeout(() => prDialog.closeDialog(), 500);
-            }
-        }
     },
     components: { ProgressCircularDialog }
 }
