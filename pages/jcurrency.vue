@@ -83,12 +83,25 @@ export default {
             loadingBtc: false,
             loadingEth: false,
             loadingBtcEth: false,
+            noData:{  
+                text: "Loading...",  
+                align: 'center',  
+                verticalAlign: 'middle',  
+                offsetX: 0,  
+                offsetY: 0,  
+                style: {  
+                    color: "#c71585",  
+                    fontSize: '30px',  
+                    fontFamily: "Helvetica"  
+                }  
+            },
         };
     },
     methods: {
         getForexData: async function () {
             this.loadingForex = true;
             const self = this;
+            self.currencyData = [];
             let startDate = new Date(), endDate = new Date();
             startDate.setDate(startDate.getDate() - this.num_of_days);
             let url = "https://api.exchangerate.host/timeseries?base=" + this.baseCurrency.symbol;
@@ -157,7 +170,7 @@ export default {
             let url = "https://api.coincap.io/v2/candles?exchange=poloniex&interval=w1&baseId=ethereum&quoteId=bitcoin";
             const res = await this.$axios.get(url)
                 .then(function (response) {
-                //console.log(response.data);
+                console.log(response.data);
                 self.cryptoData.btceth = response.data.data;
             })
                 .catch(function (error) {
@@ -200,6 +213,7 @@ export default {
             let options = {};
             options.theme = { mode: "dark" };
             options.xaxis = { type: "datetime" };
+            options.noData = this.noData;
             return { options: options, series: series };
         },
         cryptoChart() {
@@ -253,12 +267,13 @@ export default {
                 }
             };
             options.yaxis = [btcAxis, ethAxis];
+            options.noData = this.noData;
             return { options: options, series: series };
         },
         candleData() {
             let gdata = [];
             let btcethData = this.cryptoData.btceth;
-            btcethData = btcethData.slice(-30);
+            btcethData = btcethData.slice(-60);
             btcethData.forEach(obj => {
                 var xdata = obj.period;
                 var ydata = [obj.open, obj.high, obj.low, obj.close];
@@ -268,6 +283,7 @@ export default {
             let options = {};
             options.theme = { mode: "dark" };
             options.xaxis = { type: "datetime" };
+            options.noData = this.noData;
             return { options: options, series: series };
         },
         chartHeight() {
@@ -283,7 +299,7 @@ export default {
         }
     },
     mounted() {
-        this.showProgressLoader("Loading Currency Data...");
+        //this.showProgressLoader("Loading Currency Data...");
         this.getForexData();
         this.getBtcData();
         this.getEthData();
@@ -291,8 +307,8 @@ export default {
     },
     watch: {
         baseCurrency() {
-            this.changeProgressLoader(0);
-            this.showProgressLoader("Loading Currency Data...");
+            //this.changeProgressLoader(0);
+            //this.showProgressLoader("Loading Currency Data...");
             this.getForexData();
         },
     },
